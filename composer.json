@@ -8,6 +8,10 @@
     "minimum-stability": "dev",
     "support": {
         "issues": "https://www.drupal.org/project/issues/advancedqueue_runner",
-        "source": "http://cgit.drupalcode.org/advancedqueue_runner",
+        "source": "http://cgit.drupalcode.org/advancedqueue_runner"
     },
+    "require": {
+        "react/child-process": "^1.0",
+        "react/event-loop": "^1.0",
+    }
 }
