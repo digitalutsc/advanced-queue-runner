@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Contains advancedqueue_runner.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function advancedqueue_runner_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the advancedqueue_runner module.
+    case 'help.page.advancedqueue_runner':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This module assist Advanced queue module for running in the background without activate cronjob or run command') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function advancedqueue_runner_theme() {
+  return [
+    'advancedqueue_runner' => [
+      'render element' => 'children',
+    ],
+  ];
+}

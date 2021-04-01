@@ -1,0 +1,13 @@
+{
+    "name": "advancedqueue_runner",
+    "type": "drupal-module",
+    "description": "This module assist Advanced queue module for running in the background without activate cronjob or run command",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/advancedqueue_runner",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/advancedqueue_runner",
+        "source": "http://cgit.drupalcode.org/advancedqueue_runner",
+    },
+}
