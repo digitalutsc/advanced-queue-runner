@@ -67,7 +67,10 @@ class RunnerConfigForm extends ConfigFormBase
   {
     parent::submitForm($form, $form_state);
 
-    /*$configFactory = $this->configFactory->getEditable('advancedqueue_runner.runnerconfig');
+    //exec("nohup php /Applications/XAMPP/xamppfiles/htdocs/demo9/web/modules/custom/advancedqueue_runner/src/Form/../Scripts/jobs.php 2>&1", $output);
+    //print_log($output);
+
+    $configFactory = $this->configFactory->getEditable('advancedqueue_runner.runnerconfig');
 
     // Then you can start/stop/ check status of the job.
     $process = new Runner('php ' . __DIR__ . '/../Scripts/jobs.php');
@@ -76,16 +79,15 @@ class RunnerConfigForm extends ConfigFormBase
     $status = $process->status();
     print_log($status);
     if ($status) {
+      \Drupal::messenger()->addMessage(t('The process is now running.'), 'success');
       $configFactory->set('runner-pid', $my_pid);
       print_log($my_pid);
       $configFactory->save();
     } else {
-      print_log("The process is not running");;
+      \Drupal::messenger()->addMessage(t('The process is not running.'), 'error');
+      print_log("");;
     }
-    */
-    exec("disown php /Applications/XAMPP/xamppfiles/htdocs/demo9/web/modules/custom/advancedqueue_runner/src/Form/../Scripts/jobs.php 2>&1", $output);
 
-    print_log($output);
 
   }
 

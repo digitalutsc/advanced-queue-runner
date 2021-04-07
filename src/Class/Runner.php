@@ -18,8 +18,8 @@ class Runner
 
   private function runCom()
   {
-    //$command = 'nohup ' . $this->command . ' > /dev/null 2>&1 & echo $!';
-    $command = 'nohup ' . $this->command . ' > '.__DIR__.'/../Scripts/nohup.out 2>&1 & echo $!';
+    $command = 'nohup ' . $this->command . ' > /dev/null 2>&1 & echo $!';
+    //$command = 'nohup ' . $this->command . ' > '.__DIR__.'/../Scripts/nohup.out 2>&1 & echo $!';
     print_log($command);
     exec($command, $op);
     print_log($op);
