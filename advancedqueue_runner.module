@@ -18,7 +18,6 @@ function advancedqueue_runner_help($route_name, RouteMatchInterface $route_match
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('This module assist Advanced queue module for running in the background without activate cronjob or run command') . '</p>';
       return $output;
-
     default:
   }
 }
@@ -33,3 +32,30 @@ function advancedqueue_runner_theme() {
     ],
   ];
 }
+
+/**
+ * Debug function: display any variable to error log
+ *
+ * @param $thing
+ */
+if (!function_exists('print_log')) {
+  function print_log($thing)
+  {
+    error_log(print_r($thing, true), 0);
+  }
+
+}
+/**
+ * Debug function: display any variable to current webpage
+ * @param $thing
+ */
+if (!function_exists('logging')) {
+  function logging($thing)
+  {
+    echo "<pre>";
+    print_r($thing);
+    echo "</pre>";
+  }
+}
+
+
