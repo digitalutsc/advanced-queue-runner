@@ -47,7 +47,9 @@ $loop = React\EventLoop\Factory::create();
 $loop->addPeriodicTimer(1, function () {
     //$cron = \Drupal::service('cron');
     //$cron->run();
-    print "Loop running";
+    error_log(print_r("...................................", true), 0);
+    error_log(print_r("Runner is running .....", true), 0);
+    error_log(print_r("...................................", true), 0);
 });
 $loop->run();
 
