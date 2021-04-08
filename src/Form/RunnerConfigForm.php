@@ -41,6 +41,13 @@ class RunnerConfigForm extends ConfigFormBase
 
         $form = [];//parent::buildForm($form, $form_state);
 
+
+        global $base_url;
+        $form['base_url'] = array(
+            '#type' => 'hidden',
+            '#value' => $base_url,
+        );
+
         $runnerID = $config->get('runner-pid');
         $default = "Run";
 
@@ -62,9 +69,6 @@ class RunnerConfigForm extends ConfigFormBase
             if ($runner->status()) {
                 // if the runner is running, show stop button
                 $default = "Stop";
-                $form['runner-id'] = [
-                    '#markup' => $this->t('<p>Status (ID: ' . $runnerID . '): Running</p>')
-                ];
                 $form['runner'] = array(
                     '#type' => 'table',
                     '#header' => array(
@@ -85,9 +89,9 @@ class RunnerConfigForm extends ConfigFormBase
                         'data' => [
                             $config->get('runner-pid'),
                             $this->t($queue_str),
-                            $config->get('interval'),
+                            $config->get('interval'). " second(s)",
                             $modes[$config->get('mode')],
-                            date("F j, Y", $config->get('started_at')),
+                            date("F j, Y, g:i a", $config->get('started_at')),
                             $this->t('<p>Running (PID: ' . $runnerID . ')</p>')
                         ]
                     ]
@@ -101,11 +105,15 @@ class RunnerConfigForm extends ConfigFormBase
             $queues = \Drupal::entityQuery('advancedqueue_queue')->execute();
             foreach ($queues as $key => $value) {
                 $queues[$key] = $value . " <a href='/admin/config/system/queues/jobs/$key' target='_blank'>&#9432;</a>";
+
+//                $entity = \Drupal::entityTypeManager()->getStorage('advancedqueue_queue')->load($key);
+//                $jobs = $entity->getBackend()->countJobs()['queued'];
+//                logging($jobs);
             }
             $form['included-queues'] = array(
                 '#type' => 'checkboxes',
                 '#name' => 'queues',
-                '#title' => $this->t('Select to include queue(s) into the runner:'),
+                '#title' => $this->t('Select which queue(s) to run:'),
                 '#required' => TRUE,
                 '#default_value' => 1,
                 '#options' => $queues,
@@ -115,6 +123,8 @@ class RunnerConfigForm extends ConfigFormBase
                 '#type' => 'number',
                 '#title' => $this
                     ->t('Interval:'),
+                '#description' => $this->t('In second(s). '),
+                '#required' => TRUE,
             );
             $form['running-mode'] = array(
                 '#type' => 'radios',
@@ -141,6 +151,7 @@ class RunnerConfigForm extends ConfigFormBase
 
         // get existing config
         $configFactory = $this->configFactory->getEditable('advancedqueue_runner.runnerconfig');
+        $configFactory->set('base_url', $form_state->getValues()['base_url']);
         $runnerID = $configFactory->get('runner-pid');
 
         if (!isset($runnerID)) {
@@ -149,6 +160,8 @@ class RunnerConfigForm extends ConfigFormBase
             $configFactory->set('interval', $form_state->getValues()['interval']);
             $configFactory->set('mode', $form_state->getValues()['running-mode']);
             $configFactory->set('started_at', time());
+            // save the config
+            $configFactory->save();
 
             $process = new Runner('php ' . __DIR__ . '/../Scripts/jobs.php');
             $my_pid = $process->getPid();
