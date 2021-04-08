@@ -21,9 +21,6 @@ class Runner
         //$command = 'nohup ' . $this->command . ' > /dev/null 2>&1 & echo $!';
         $command = 'nohup ' . $this->command . ' > ' . __DIR__ . '/../Scripts/nohup.out 2>&1 & echo $!';
         exec($command, $op);
-        print_log('=======Runcmd =============');
-        print_log($op);
-        print_log('===========================');
         $this->pid = (int)$op[0];
     }
 
@@ -41,9 +38,6 @@ class Runner
     {
         $command = 'ps -p ' . $this->pid;
         exec($command, $op);
-        print_log('=======status() =============');
-        print_log($op);
-        print_log('===========================');
         if (!isset($op[1])) return false;
         else return true;
     }

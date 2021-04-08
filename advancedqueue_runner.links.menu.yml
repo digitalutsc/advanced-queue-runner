@@ -1,6 +1,6 @@
 advancedqueue_runner.runner_config_form:
-  title: 'RunnerConfigForm'
+  title: 'Advanced Queue Runner'
   route_name: advancedqueue_runner.runner_config_form
-  description: 'A description for the menu entry'
+  description: 'An "daemonize" runner for Advanced Queue'
   parent: system.admin_config_system
   weight: 99

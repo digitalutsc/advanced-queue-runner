@@ -60,6 +60,36 @@ class RunnerConfigForm extends ConfigFormBase
                 $config->save();
             }
         }
+        else {
+            $queues = \Drupal::entityQuery('advancedqueue_queue')->execute();
+            foreach($queues as $key => $value) {
+                $queues[$key] = $value . " <a href='/admin/config/system/queues/jobs/$key' target='_blank'>&#9432;</a>";
+            }
+            $form['included-queues']= array(
+                '#type' => 'checkboxes',
+                '#name' => 'queues',
+                '#title' => $this->t('Select to include queue(s) into the runner:'),
+                '#required' => TRUE,
+                '#default_value' => 1,
+                '#options' => $queues,
+                '#default_value' => ($config->get("advancedqueue-id") !== null) ? $config->get("advancedqueue-id") : "default",
+            );
+            $form['interval'] = array(
+                '#type' => 'number',
+                '#title' => $this
+                    ->t('Interval:'),
+            );
+            $form['how-to-run'] =  array(
+                '#type' => 'radios',
+                '#default_value' => 'limit',
+                '#options' => array(
+                    'limit' => $this
+                        ->t('Only run queue(s) if there is queued job(s)'),
+                    'full' => $this
+                        ->t('Always run the queue(s) no matter what.'),
+                ),
+            );
+        }
 
 
         $form['example_select'] = [
@@ -88,7 +118,7 @@ class RunnerConfigForm extends ConfigFormBase
             $status = $process->status();
 
             if ($status) {
-                \Drupal::messenger()->addMessage(t('The process is now running.'), 'success');
+                \Drupal::messenger()->addMessage(t('The Runner is now active.'));
                 $configFactory->set('runner-pid', $my_pid);
                 $configFactory->save();
             }
@@ -99,7 +129,7 @@ class RunnerConfigForm extends ConfigFormBase
             $runner->stop();
 
             if (!$runner->status()) {
-                \Drupal::messenger()->addMessage(t('The runner has been stopped.'), 'success');
+                \Drupal::messenger()->addMessage(t('The Runner has been stopped.'));
                 $configFactory->set('runner-pid', null);
                 $configFactory->save();
             }
