@@ -38,10 +38,7 @@ class RunnerConfigForm extends ConfigFormBase
     public function buildForm(array $form, FormStateInterface $form_state)
     {
         $config = $this->config('advancedqueue_runner.runnerconfig');
-
-        $form = [];//parent::buildForm($form, $form_state);
-
-
+        $form = [];
         global $base_url;
         $form['base_url'] = array(
             '#type' => 'hidden',
@@ -100,15 +97,13 @@ class RunnerConfigForm extends ConfigFormBase
                 // if not running, remove the PID
                 $config->set('runner-pid', null);
                 $config->save();
+                \Drupal::messenger()->addMessage(t('Sorry, unable to load current Queue Runner. Please refresh the page to start it again.'), 'error');
+                return $form;
             }
         } else {
             $queues = \Drupal::entityQuery('advancedqueue_queue')->execute();
             foreach ($queues as $key => $value) {
                 $queues[$key] = $value . " <a href='/admin/config/system/queues/jobs/$key' target='_blank'>&#9432;</a>";
-
-//                $entity = \Drupal::entityTypeManager()->getStorage('advancedqueue_queue')->load($key);
-//                $jobs = $entity->getBackend()->countJobs()['queued'];
-//                logging($jobs);
             }
             $form['included-queues'] = array(
                 '#type' => 'checkboxes',

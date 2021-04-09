@@ -58,12 +58,12 @@ $mode = $config->get('mode');
 $base_url = $config->get('base_url');
 
 $loop = React\EventLoop\Factory::create();
-$loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url) {
+$loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $kernel) {
     foreach ($queues as $queue) {
         $command = sprintf(__DIR__ . '/../../../../../../vendor/drush/drush/drush --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
         if ($mode === 'limit') {
-            $entity = \Drupal::entityTypeManager()->getStorage('advancedqueue_queue')->load($queue);
-            $jobs = $entity->getBackend()->countJobs()['queued'];
+            $connection = $kernel->getContainer()->get('database');
+            $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
 
             // only run queue if there is queued job in it.
             if ($jobs > 0) {

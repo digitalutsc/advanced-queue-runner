@@ -14,4 +14,10 @@ class DefaultService implements DefaultServiceInterface {
 
   }
 
+  public function countJob(String $queue) {
+      $entity = \Drupal::entityTypeManager()->getStorage('advancedqueue_queue')->load($queue);
+      $jobs = $entity->getBackend()->countJobs()['queued'];
+      return $jobs;
+  }
+
 }

@@ -1,9 +1,0 @@
-Error: Cannot use object of type Drupal\Core\Config\ImmutableConfig as array in /var/www/drupalvm/drupal/web/core/lib/Drupal/Core/Config/ConfigFactory.php on line 181 #0 /var/www/drupalvm/drupal/web/core/lib/Drupal/Core/Config/ConfigFactory.php(136): Drupal\Core\Config\ConfigFactory->doLoadMultiple(Array)
-#1 /var/www/drupalvm/drupal/web/core/lib/Drupal/Core/Config/Entity/ConfigEntityStorage.php(177): Drupal\Core\Config\ConfigFactory->loadMultiple(Array)
-#2 /var/www/drupalvm/drupal/web/core/lib/Drupal/Core/Entity/EntityStorageBase.php(295): Drupal\Core\Config\Entity\ConfigEntityStorage->doLoadMultiple(Array)
-#3 /var/www/drupalvm/drupal/web/modules/custom/advanced-queue-runner/src/Scripts/jobs.php(66): Drupal\Core\Entity\EntityStorageBase->loadMultiple(Array)
-#4 /var/www/drupalvm/drupal/vendor/react/event-loop/src/Timer/Timers.php(96): {closure}(Object(React\EventLoop\Timer\Timer))
-#5 /var/www/drupalvm/drupal/vendor/react/event-loop/src/StreamSelectLoop.php(184): React\EventLoop\Timer\Timers->tick()
-#6 /var/www/drupalvm/drupal/web/modules/custom/advanced-queue-runner/src/Scripts/jobs.php(83): React\EventLoop\StreamSelectLoop->run()
-#7 {main}
-Error: Cannot use object of type Drupal\Core\Config\ImmutableConfig as array in Drupal\Core\Config\ConfigFactory->doLoadMultiple() (line 181 of /var/www/drupalvm/drupal/web/core/lib/Drupal/Core/Config/ConfigFactory.php).
