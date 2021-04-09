@@ -23,3 +23,7 @@ This module provides a way to run Advanced queue (by Drush command) automaticall
 
 * Please visit `/admin/config/advancedqueue/runner` to configure and start the runner.
 
+## Maintainer
+
+* [Kyle Huynh](https://github.com/kylehuynh205)
+* [Nat Kanthan](https://github.com/Natkeeran)
