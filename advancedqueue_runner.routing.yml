@@ -1,0 +1,9 @@
+advancedqueue_runner.runner_config_form:
+  path: '/admin/config/advancedqueue/runner'
+  defaults:
+    _form: '\Drupal\advancedqueue_runner\Form\RunnerConfigForm'
+    _title: 'Advanced Queue Runner'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

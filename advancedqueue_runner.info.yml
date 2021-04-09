@@ -3,3 +3,5 @@ type: module
 description: 'This module assist Advanced queue module for running in the background without activate cronjob or run command'
 core_version_requirement: '^8.8 || ^9'
 package: 'Custom'
+dependencies:
+  - advancedqueue:advancedqueue

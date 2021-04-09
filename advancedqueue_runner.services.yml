@@ -1,0 +1,7 @@
+services:
+  logger.channel.advancedqueue_runner:
+    parent: logger.channel_base
+    arguments: ['advancedqueue_runner']
+  advancedqueue_runner.default:
+    class: Drupal\advancedqueue_runner\DefaultService
+    arguments: []

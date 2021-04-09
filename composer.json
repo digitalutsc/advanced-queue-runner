@@ -13,5 +13,12 @@
     "require": {
         "react/child-process": "^1.0",
         "react/event-loop": "^1.0",
+    },
+    "extra": {
+        "drush": {
+            "services": {
+                "drush.services.yml": "^9"
+            }
+        }
     }
 }
