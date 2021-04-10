@@ -12,8 +12,8 @@ This module provides a way to run Advanced queue (by Drush command) automaticall
 ## Installation:
 
 * In Drupal.org: https://www.drupal.org/project/advancedqueue_runner
-* Highly recommend to install the module by using composer: `composer require 'drupal/advancedqueue_runner:^1.0@alpha'`. It helps to install its dependencies and required above ReactPHP components automatically.
-* If you choose to download the module files, please manually run the bellow commands to install its dependencies:
+* Highly recommend to install the module by using composer: `composer require 'drupal/advancedqueue_runner:^1.0@alpha'`. 
+* Please run the bellow commands to install its dependencies:
   * `composer require 'drupal/advancedqueue:^1.0@RC'`
   * `composer require "react/child-process": "^1.0"`
   * `composer require "react/event-loop": "^1.0"`
