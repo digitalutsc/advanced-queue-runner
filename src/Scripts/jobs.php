@@ -65,7 +65,7 @@ $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $
       $drush_path  = $config->get('drush_path');
       $root_path  = $config->get('root_path');
 
-      $command = sprintf($drush_path .  '--root='.$root_path.' --uri=' .  parse_url($base_url, PHP_URL_HOST) . ' advancedqueue:queue:process ' . $queue);
+      $command = sprintf($drush_path .  ' --root='.$root_path.' --uri=' .  parse_url($base_url, PHP_URL_HOST) . ' advancedqueue:queue:process ' . $queue);
       //$command = sprintf($drush_path. ' --root=/var/www/core-D9/ advancedqueue:queue:process ' . $queue);
 
       if ($mode === 'limit') {
