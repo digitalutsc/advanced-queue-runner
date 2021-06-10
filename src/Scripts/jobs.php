@@ -16,6 +16,7 @@ function run_command(string $command): void
     $process->stdout->on('data', function ($chunk) {
         // Optinally log the output.
         //error_log(print_r("Data....", true), 0);
+      \Drupal::logger('runner')->notice($chunk);
     });
     $process->stdout->on('error', function (Exception $e) use ($command) {
         // Log an error.
@@ -56,17 +57,22 @@ $queues = $config->get('queues');
 $interval = $config->get('interval');
 $mode = $config->get('mode');
 $base_url = $config->get('base_url');
+$drush_path  = $config->get('drush_path');
+$root_path  = $config->get('root_path');
 
 $loop = React\EventLoop\Factory::create();
 $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $kernel) {
     foreach ($queues as $queue) {
-        $command = sprintf(__DIR__ . '/../../../../../../vendor/drush/drush/drush --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
-        if ($mode === 'limit') {
+        $command = sprintf($drush_path .  '--root='.$root_path.' --uri=' .  parse_url($base_url, PHP_URL_HOST) . ' advancedqueue:queue:process ' . $queue);
+        //$command = sprintf($drush_path. ' --root=/var/www/core-D9/ advancedqueue:queue:process ' . $queue);
+
+      if ($mode === 'limit') {
             $connection = $kernel->getContainer()->get('database');
             $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
 
             // only run queue if there is queued job in it.
             if ($jobs > 0) {
+                \Drupal::logger('runner')->notice(sprintf($command));
                 run_command(sprintf($command));
             }
         }

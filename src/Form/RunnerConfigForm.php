@@ -105,6 +105,23 @@ class RunnerConfigForm extends ConfigFormBase
             foreach ($queues as $key => $value) {
                 $queues[$key] = $value . " <a href='/admin/config/system/queues/jobs/$key' target='_blank'>&#9432;</a>";
             }
+            $form['drush-path'] = array(
+              '#type' => 'textfield',
+              '#title' => $this
+                ->t('Drush Path:'),
+              '#required' => TRUE,
+              '#default_value' => ($config->get("drush_path") !== null) ? $config->get("drush_path") : "",
+              '#description' => $this->t('For example: <code>/var/www/drupal9/vendor/drush/drush/drush</code>')
+            );
+            $form['root-path'] = array(
+              '#type' => 'textfield',
+              '#title' => $this
+                ->t('Root Path:'),
+              '#required' => TRUE,
+              '#default_value' => ($config->get("root_path") !== null) ? $config->get("root_path") : "",
+              '#description' => $this->t('For example: <code>/var/www/drupal9</code>')
+            );
+
             $form['included-queues'] = array(
                 '#type' => 'checkboxes',
                 '#name' => 'queues',
@@ -121,11 +138,13 @@ class RunnerConfigForm extends ConfigFormBase
                 '#description' => $this->t('In second(s). '),
                 '#required' => TRUE,
             );
-            $form['running-mode'] = array(
+
+            /*$form['running-mode'] = array(
                 '#type' => 'radios',
                 '#default_value' => 'limit',
                 '#options' => $modes,
-            );
+            );*/
+
         }
 
 
@@ -147,13 +166,16 @@ class RunnerConfigForm extends ConfigFormBase
         // get existing config
         $configFactory = $this->configFactory->getEditable('advancedqueue_runner.runnerconfig');
         $configFactory->set('base_url', $form_state->getValues()['base_url']);
+        $configFactory->set('drush_path', $form_state->getValues()['drush-path']);
+        $configFactory->set('root_path', $form_state->getValues()['root-path']);
         $runnerID = $configFactory->get('runner-pid');
 
         if (!isset($runnerID)) {
             // Start the runner
             $configFactory->set('queues', $form_state->getValues()['included-queues']);
             $configFactory->set('interval', $form_state->getValues()['interval']);
-            $configFactory->set('mode', $form_state->getValues()['running-mode']);
+            //$configFactory->set('mode', $form_state->getValues()['running-mode']);
+            $configFactory->set('mode', "limit");
             $configFactory->set('started_at', time());
             // save the config
             $configFactory->save();
