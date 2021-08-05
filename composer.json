@@ -6,6 +6,7 @@
     ],
     "homepage": "https://www.drupal.org/project/advancedqueue_runner",
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "support": {
         "issues": "https://www.drupal.org/project/issues/advancedqueue_runner",
         "source": "http://cgit.drupalcode.org/advancedqueue_runner"
