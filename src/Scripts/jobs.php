@@ -85,7 +85,7 @@ $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $
 
             // only run queue if there is queued job in it.
             if ($jobs > 0) {
-                \Drupal::logger('runner')->notice(sprintf($command));
+                //\Drupal::logger('runner')->notice(sprintf($command));
                 run_command(sprintf($command));
             }
         } else {

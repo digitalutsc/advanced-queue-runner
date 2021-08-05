@@ -129,7 +129,7 @@ class RunnerConfigForm extends ConfigFormBase
                 '#required' => TRUE,
                 '#default_value' => 1,
                 '#options' => $queues,
-                '#default_value' => ($config->get("advancedqueue-id") !== null) ? $config->get("advancedqueue-id") : "default",
+                '#default_value' => ($config->get("advancedqueue-id") !== null) ? $config->get("advancedqueue-id") : ["default"],
             );
             $form['interval'] = array(
                 '#type' => 'number',
