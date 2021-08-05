@@ -11,8 +11,8 @@
         "source": "http://cgit.drupalcode.org/advancedqueue_runner"
     },
     "require": {
-        "react/child-process": ">=1.0",
-        "react/event-loop": ">=1.0"
+        "react/child-process": "^1.0",
+        "react/event-loop": "^1.0"
     },
     "extra": {
         "drush": {
