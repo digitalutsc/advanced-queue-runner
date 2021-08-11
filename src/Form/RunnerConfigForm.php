@@ -56,10 +56,12 @@ class RunnerConfigForm extends ConfigFormBase
         );
 
         $queue_str = '';
-        foreach (array_keys($config->get('queues')) as $queue) {
-            $queue_str .= "$queue<br />";
+        if ($config->get('queues') !== null) {
+            foreach (array_keys($config->get('queues')) as $queue) {
+                $queue_str .= "$queue<br />";
+            }
+            $queue_str .= '';
         }
-        $queue_str .= '';
         if (isset($runnerID)) {
             $runner = new Runner();
             $runner->setPid($runnerID);
@@ -106,20 +108,20 @@ class RunnerConfigForm extends ConfigFormBase
                 $queues[$key] = $value . " <a href='/admin/config/system/queues/jobs/$key' target='_blank'>&#9432;</a>";
             }
             $form['drush-path'] = array(
-              '#type' => 'textfield',
-              '#title' => $this
-                ->t('Drush Path:'),
-              '#required' => TRUE,
-              '#default_value' => ($config->get("drush_path") !== null) ? $config->get("drush_path") : "",
-              '#description' => $this->t('For example: <code>/var/www/drupal9/vendor/drush/drush/drush</code>')
+                '#type' => 'textfield',
+                '#title' => $this
+                    ->t('Drush Path:'),
+                '#required' => TRUE,
+                '#default_value' => ($config->get("drush_path") !== null) ? $config->get("drush_path") : "",
+                '#description' => $this->t('For example: <code>/var/www/html/drupal/vendor/drush/drush/drush</code>')
             );
             $form['root-path'] = array(
-              '#type' => 'textfield',
-              '#title' => $this
-                ->t('Root Path:'),
-              '#required' => TRUE,
-              '#default_value' => ($config->get("root_path") !== null) ? $config->get("root_path") : "",
-              '#description' => $this->t('For example: <code>/var/www/drupal9</code>')
+                '#type' => 'textfield',
+                '#title' => $this
+                    ->t('Root Path:'),
+                '#required' => TRUE,
+                '#default_value' => ($config->get("root_path") !== null) ? $config->get("root_path") : "",
+                '#description' => $this->t('For example: <code>/var/www/html/drupal</code>')
             );
 
             $form['included-queues'] = array(

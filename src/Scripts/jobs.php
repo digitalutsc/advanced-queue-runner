@@ -16,7 +16,7 @@ function run_command(string $command): void
     $process->stdout->on('data', function ($chunk) {
         // Optinally log the output.
         //error_log(print_r("Data....", true), 0);
-        \Drupal::logger('runner')->notice($chunk);
+        //\Drupal::logger('runner')->notice($chunk);
     });
     $process->stdout->on('error', function (Exception $e) use ($command) {
         // Log an error.
@@ -76,7 +76,8 @@ $loop = React\EventLoop\Factory::create();
 $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $kernel, $drush_path, $root_path) {
     foreach ($queues as $queue) {
 
-        $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . parse_url($base_url, PHP_URL_HOST) . ' advancedqueue:queue:process ' . $queue);
+        //$command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . parse_url($base_url, PHP_URL_HOST) . ' advancedqueue:queue:process ' . $queue);
+        $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
         //$command = sprintf($drush_path. ' --root=/var/www/core-D9/ advancedqueue:queue:process ' . $queue);
 
         if ($mode === 'limit') {
