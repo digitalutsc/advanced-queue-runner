@@ -58,4 +58,53 @@ if (!function_exists('logging')) {
   }
 }
 
+/**
+ * Debug function: display any variable to drupal Reports Log messages
+ *
+ */
+if (!function_exists('drupal_log')) {
+    function drupal_log($msg, $type="error")
+    {
+        switch($type) {
+            case "notice" : {
+                \Drupal::logger(basename(__FILE__, '.module'))->notice($msg);
+                break;
+            }
+            case "log" : {
+                \Drupal::logger(basename(__FILE__, '.module'))->log(\Drupal\Core\Logger\RfcLogLevel::NOTICE, $msg);
+                break;
+            }
+            case "warning" : {
+                \Drupal::logger(basename(__FILE__, '.module'))->warning($msg);
+                break;
+            }
+            case "alert" : {
+                \Drupal::logger(basename(__FILE__, '.module'))->alert($msg);
+                break;
+            }
+            case "critical" : {
+                \Drupal::logger(basename(__FILE__, '.module'))->critical($msg);
+                break;
+            }
+            case "debug" : {
+                \Drupal::logger(basename(__FILE__, '.module'))->debug($msg);
+                break;
+            }
+            case "info" : {
+                \Drupal::logger(basename(__FILE__, '.module'))->info($msg);
+                break;
+            }
+            case "emergency" : {
+                \Drupal::logger(basename(__FILE__, '.module'))->emergency($msg);
+                break;
+            }
+            default: {
+                \Drupal::logger(basename(__FILE__, '.module'))->error($msg);
+                break;
+            }
+        }
+    }
+}
+
+
 

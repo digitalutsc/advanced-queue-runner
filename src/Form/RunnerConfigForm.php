@@ -99,7 +99,7 @@ class RunnerConfigForm extends ConfigFormBase
                 // if not running, remove the PID
                 $config->set('runner-pid', null);
                 $config->save();
-                \Drupal::messenger()->addMessage(t('Sorry, unable to load current Queue Runner. Please refresh the page to start it again.'), 'error');
+                \Drupal::messenger()->addMessage(t('Sorry, the Advanced Queue Runner is not currently running. Please refresh the page to start it again.'), 'error');
                 return $form;
             }
         } else {
@@ -140,17 +140,8 @@ class RunnerConfigForm extends ConfigFormBase
                 '#description' => $this->t('In second(s). '),
                 '#required' => TRUE,
             );
-
-            /*$form['running-mode'] = array(
-                '#type' => 'radios',
-                '#default_value' => 'limit',
-                '#options' => $modes,
-            );*/
-
         }
-
-
-        $form['example_select'] = [
+        $form['submit'] = [
             '#type' => 'submit',
             '#value' => $this->t($default),
         ];
@@ -167,16 +158,21 @@ class RunnerConfigForm extends ConfigFormBase
 
         // get existing config
         $configFactory = $this->configFactory->getEditable('advancedqueue_runner.runnerconfig');
-        $configFactory->set('base_url', $form_state->getValues()['base_url']);
-        $configFactory->set('drush_path', $form_state->getValues()['drush-path']);
-        $configFactory->set('root_path', $form_state->getValues()['root-path']);
+        if (!empty($form_state->getValues()['base_url']))
+            $configFactory->set('base_url', $form_state->getValues()['base_url']);
+
+        if (!empty($form_state->getValues()['drush-path']))
+            $configFactory->set('drush_path', $form_state->getValues()['drush-path']);
+
+        if (!empty($form_state->getValues()['root-path']))
+            $configFactory->set('root_path', $form_state->getValues()['root-path']);
+
         $runnerID = $configFactory->get('runner-pid');
 
         if (!isset($runnerID)) {
             // Start the runner
-            $configFactory->set('queues', $form_state->getValues()['included-queues']);
+	        $configFactory->set('queues', array_filter($form_state->getValues()['included-queues']));
             $configFactory->set('interval', $form_state->getValues()['interval']);
-            //$configFactory->set('mode', $form_state->getValues()['running-mode']);
             $configFactory->set('mode', "limit");
             $configFactory->set('started_at', time());
             // save the config
@@ -195,15 +191,6 @@ class RunnerConfigForm extends ConfigFormBase
             $runner = new Runner();
             $runner->setPid($runnerID);
             $runner->stop();
-
-            if (!$runner->status()) {
-                \Drupal::messenger()->addMessage(t('The Runner has been stopped.'));
-                $configFactory->set('runner-pid', null);
-                $configFactory->set('queues', null);
-                $configFactory->set('interval', null);
-                $configFactory->set('mode', null);
-                $configFactory->set('started_at', null);
-            }
         }
 
         // save the config
