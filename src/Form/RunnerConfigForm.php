@@ -1,7 +1,7 @@
 <?php
 
 namespace Drupal\advancedqueue_runner\Form;
-include __DIR__ . "/../Class/Runner.php";
+//include __DIR__ . "/../Class/Runner.php";
 
 use Drupal\advancedqueue_runner\Classes\Runner;
 use Drupal\Core\Form\ConfigFormBase;
@@ -74,13 +74,13 @@ class RunnerConfigForm extends ConfigFormBase
                         $this
                             ->t('PID'),
                         $this
-                            ->t('For queue(s)'),
+                            ->t('Advanced Queue(s)'),
                         $this
                             ->t('Interval'),
                         $this
-                            ->t('Running Mode'),
+                            ->t('Environment variables (for Drush)'),
                         $this
-                            ->t('Started at'),
+                            ->t('Started since'),
                         $this
                             ->t('Status'),
                     ),
@@ -89,9 +89,9 @@ class RunnerConfigForm extends ConfigFormBase
                             $config->get('runner-pid'),
                             $this->t($queue_str),
                             $config->get('interval'). " second(s)",
-                            $modes[$config->get('mode')],
-                            date("F j, Y, g:i a", $config->get('started_at')),
-                            $this->t('<p>Running (PID: ' . $runnerID . ')</p>')
+                            $this->t("<ul><li>Drush path: <code>".$config->get('drush_path') . "</code></li><li>Site path: <code>".$config->get('root_path') ."</code></li><li>HOME: <code>".getenv("HOME")."</code></li></ul>"),
+                            $this->t(date("F j, Y, g:i a", $config->get('started_at'))  . (($config->get("auto-restart-in-cron") == 1) ? "<br />(Re-run automatically when cron runs, if interupted)" :"")),
+                            $this->t('<p>Active</p>')
                         ]
                     ]
                 );
@@ -138,8 +138,14 @@ class RunnerConfigForm extends ConfigFormBase
                 '#title' => $this
                     ->t('Interval:'),
                 '#description' => $this->t('In second(s). '),
+                '#default_value' => ($config->get("interval") !== null) ? $config->get("interval") : 5,
                 '#required' => TRUE,
             );
+          $form['auto-restart-in-cron'] = [
+            '#type' => 'checkbox',
+            '#title' => $this->t('Enable re-run automatically the runner when cron runs if the runner were interupted (ie. server reboot).'),
+            '#default_value' => ($config->get("auto-restart-in-cron") !== null) ? $config->get("auto-restart-in-cron") : 0,
+          ];
         }
         $form['submit'] = [
             '#type' => 'submit',
@@ -166,6 +172,8 @@ class RunnerConfigForm extends ConfigFormBase
 
         if (!empty($form_state->getValues()['root-path']))
             $configFactory->set('root_path', $form_state->getValues()['root-path']);
+
+        $configFactory->set('auto-restart-in-cron', $form_state->getValues()['auto-restart-in-cron']);
 
         $runnerID = $configFactory->get('runner-pid');
 
