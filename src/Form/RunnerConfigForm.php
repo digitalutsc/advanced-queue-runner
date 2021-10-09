@@ -78,7 +78,7 @@ class RunnerConfigForm extends ConfigFormBase
                         $this
                             ->t('Interval'),
                         $this
-                            ->t('Running Mode'),
+                            ->t('Environment variables (for Drush)'),
                         $this
                             ->t('Started at'),
                         $this
@@ -89,8 +89,8 @@ class RunnerConfigForm extends ConfigFormBase
                             $config->get('runner-pid'),
                             $this->t($queue_str),
                             $config->get('interval'). " second(s)",
-                            $modes[$config->get('mode')],
-                            date("F j, Y, g:i a", $config->get('started_at')),
+                            $this->t("<ul><li>Drush path:".$config->get('drush_path') . "</li><li>Site path:".$config->get('root_path') ."</li><li>HOME:".getenv("HOME")."</li></ul>"),
+                            date("F j, Y, g:i a", $config->get('started_at'))  . ($config->get("auto-restart-in-cron") == 1) ? "<br /> If interupted, auto-restart when cron runs" :"",
                             $this->t('<p>Running (PID: ' . $runnerID . ')</p>')
                         ]
                     ]
@@ -140,6 +140,11 @@ class RunnerConfigForm extends ConfigFormBase
                 '#description' => $this->t('In second(s). '),
                 '#required' => TRUE,
             );
+          $form['auto-restart-in-cron'] = [
+            '#type' => 'checkbox',
+            '#title' => $this->t('Enable auto-restart the runner when cron runs if the runner were interupted (ie. server reboot).'),
+            '#default_value' => ($config->get("auto-restart-in-cron") !== null) ? $config->get("auto-restart-in-cron") : 0,
+          ];
         }
         $form['submit'] = [
             '#type' => 'submit',
@@ -166,6 +171,8 @@ class RunnerConfigForm extends ConfigFormBase
 
         if (!empty($form_state->getValues()['root-path']))
             $configFactory->set('root_path', $form_state->getValues()['root-path']);
+
+        $configFactory->set('auto-restart-in-cron', $form_state->getValues()['auto-restart-in-cron']);
 
         $runnerID = $configFactory->get('runner-pid');
 

@@ -42,6 +42,13 @@ class Runner
         else return true;
     }
 
+    public static function statusByPid($pid) {
+      $command = 'ps -p ' . $pid;
+      exec($command, $op);
+      if (!isset($op[1])) return false;
+      else return true;
+    }
+
     public function start()
     {
         if ($this->command != '')
