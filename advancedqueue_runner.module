@@ -4,8 +4,7 @@
  * @file
  * Contains advancedqueue_runner.module.
  */
-
-include __DIR__ . "/Class/Runner.php";
+include __DIR__ . "/src/Class/Runner.php";
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\advancedqueue_runner\Classes\Runner;
 
@@ -51,17 +50,20 @@ function advancedqueue_runner_install() {
  * Implements hook_cron()
  */
 function advancedqueue_runner_cron() {
+
   $config = \Drupal::config('advancedqueue_runner.runnerconfig');
   if ($config->get("auto-restart-in-cron") == 1) {
     $pid = $config->get('runner-pid');
     if (isset($pid) && !empty($pid)) {
       // if the runner is already start, check if pid still exist
       if (!Runner::statusByPid($pid)) {
+
         // if no, restart the runner with existing set config,
-        $newProcess = new Runner('php ' . __DIR__ . '/Scripts/jobs.php');
+        $newProcess = new Runner('php ' . __DIR__ . '/src/Scripts/jobs.php');
         $newPID = $newProcess->getPid();
         if ($newProcess->status()) {
           // update $config->get('runner-pid')
+          $config = \Drupal::service('config.factory')->getEditable('advancedqueue_runner.runnerconfig');
           $config->set('runner-pid', $newPID);
           $config->save();
         }
