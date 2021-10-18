@@ -64,6 +64,9 @@ function advancedqueue_runner_cron() {
     if (isset($pid) && !empty($pid)) {
       // if the runner is already start, check if pid still exist
       if (!Runner::statusByPid($pid)) {
+        
+        // have to set home variable 
+	setEnvHOME();
 
         // if no, restart the runner with existing set config,
         $newProcess = new Runner('php ' . __DIR__ . '/src/Scripts/jobs.php');
