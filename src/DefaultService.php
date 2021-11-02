@@ -3,21 +3,17 @@
 namespace Drupal\advancedqueue_runner;
 
 /**
- * Class DefaultService.
+ * Class DefaultService definition.
  */
 class DefaultService implements DefaultServiceInterface {
 
   /**
-   * Constructs a new DefaultService object.
+   * Implements countJob().
    */
-  public function __construct() {
-
-  }
-
   public function countJob(String $queue) {
-      $entity = \Drupal::entityTypeManager()->getStorage('advancedqueue_queue')->load($queue);
-      $jobs = $entity->getBackend()->countJobs()['queued'];
-      return $jobs;
+    $entity = \Drupal::entityTypeManager()->getStorage('advancedqueue_queue')->load($queue);
+    $jobs = $entity->getBackend()->countJobs()['queued'];
+    return $jobs;
   }
 
 }
