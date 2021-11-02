@@ -13,7 +13,8 @@
     },
     "require": {
         "react/child-process": "*",
-        "react/event-loop": "*"
+        "react/event-loop": "*",
+        "ext-posix": "*"
     },
     "extra": {
         "drush": {
