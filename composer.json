@@ -1,5 +1,5 @@
 {
-    "name": "Advanced Queue Runner",
+    "name": "digitalutsc/advancedqueue_runner",
     "type": "drupal-module",
     "description": "This module provides a way to run Advanced queue automatically as daemon without manually using a Drush command or running a Cron job.",
     "keywords": [
@@ -7,6 +7,7 @@
     "homepage": "https://www.drupal.org/project/advancedqueue_runner",
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "license": "GPL-2.0-only",
     "support": {
         "issues": "https://www.drupal.org/project/issues/advancedqueue_runner",
         "source": "https://git.drupalcode.org/project/advancedqueue_runner"
