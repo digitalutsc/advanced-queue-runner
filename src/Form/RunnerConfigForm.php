@@ -52,7 +52,7 @@ class RunnerConfigForm extends ConfigFormBase {
     /** @var string $queue_str */
     $queue_str = '';
     if ($config->get('queues') !== NULL) {
-      foreach (array_keys($config->get('queues')) as $queue) {
+      foreach ($config->get('queues') as $queue) {
         $queue_str .= "$queue<br />";
       }
       $queue_str .= '';
@@ -127,7 +127,7 @@ class RunnerConfigForm extends ConfigFormBase {
         '#title' => $this->t('Select which queue(s) to run:'),
         '#required' => TRUE,
         '#options' => $queues,
-        '#default_value' => ($config->get("advancedqueue-id") !== NULL) ? $config->get("advancedqueue-id") : ["default"],
+        '#default_value' => ($config->get("advancedqueue-id") !== NULL) ? $config->get("queues") : ["default"],
       ];
       $form['interval'] = [
         '#type' => 'number',
