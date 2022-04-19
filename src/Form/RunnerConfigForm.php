@@ -32,9 +32,10 @@ class RunnerConfigForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('advancedqueue_runner.runnerconfig');
-    $form = [];
     global $base_url;
+    $config = $this->config('advancedqueue_runner.runnerconfig');
+
+    $form = [];
     $form['base_url'] = [
       '#type' => 'hidden',
       '#value' => $base_url,
@@ -84,7 +85,11 @@ class RunnerConfigForm extends ConfigFormBase {
               $config->get('runner-pid'),
               new FormattableMarkup($queue_str, []),
               $config->get('interval') . " second(s)",
-              new FormattableMarkup("<ul><li>Drush path: <code>" . $config->get('drush_path') . "</code></li><li>Site path: <code>" . $config->get('root_path') . "</code></li><li>HOME: <code>" . getenv("HOME") . "</code></li></ul>", []),
+              new FormattableMarkup("<ul>
+                <li>Drush path: <code>" . $config->get('drush_path') . "</code></li>
+                <li>Site path: <code>" . $config->get('root_path') . "</code></li>
+                <li>HOME: <code>" . getenv("HOME") . "</code></li>
+              </ul>", []),
               new FormattableMarkup(date("F j, Y, g:i a", $config->get('started_at')) . (($config->get("auto-restart-in-cron") == 1) ? "<br />(Re-run automatically when cron runs, if interupted)" : ""), []),
               $this->t('<p>Active</p>'),
             ],
