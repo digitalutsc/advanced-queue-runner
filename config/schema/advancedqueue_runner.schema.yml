@@ -1,0 +1,28 @@
+advancedqueue_runner.settings:
+  type: config_object
+  label: 'Advanced Queue Runner Configurations'
+  mapping:
+    base_url:
+      type: string
+      label: 'Base Url'
+    drush_path:
+      type: string
+      label: 'Drush Path'
+    root_path:
+      type: string
+      label: 'Root Path'
+    auto-restart-in-cron:
+      type: integer
+      label: 'Enable re-run automatically the runner'
+    queues:
+      type: sequence
+      label: 'Queues'
+      sequence:
+        type: string
+        label: 'Queue'
+    interval:
+      type: integer
+      label: 'Interval'
+    started_at:
+      type: integer
+      label: 'Started at'

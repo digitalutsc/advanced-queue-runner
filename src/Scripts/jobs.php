@@ -6,7 +6,7 @@
  * Description of Advanced Queue Runner Job.
  */
 
-use React\EventLoop\Factory;
+use React\EventLoop\Loop;
 use React\ChildProcess\Process;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Cmf\Component\Routing\RouteObjectInterface;
@@ -24,7 +24,7 @@ $autoloader = require $_SERVER['PWD'] . '/../vendor/autoload.php';
  */
 function drush_advancedqueue(string $command): void {
   // https://mglaman.dev/blog/using-reactphp-run-drupal-tasks.
-  $loop = Factory::create();
+  $loop = Loop::create();
   $process = new Process($command);
   $process->start($loop);
 
@@ -74,7 +74,7 @@ $kernel->boot();
 $kernel->preHandle($request);
 
 // Get configuration setup in /admin/config/advancedqueue/runner.
-$config = \Drupal::config('advancedqueue_runner.runnerconfig');
+$config = \Drupal::config('advancedqueue_runner.settings');
 $queues = $config->get('queues');
 $interval = $config->get('interval');
 $mode = $config->get('mode');
@@ -83,26 +83,21 @@ $drush_path = $config->get('drush_path');
 $root_path = $config->get('root_path');
 
 // Run EventLoop.
-$loop = Factory::create();
+$loop = Loop::get();
 $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $kernel, $drush_path, $root_path) {
   try {
     foreach ($queues as $queue) {
       // @codingStandardsIgnoreLine
       $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
 
-      if ($mode === 'limit') {
-        $connection = $kernel->getContainer()->get('database');
-        $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
+      // run the queued jobs
+      $connection = $kernel->getContainer()->get('database');
+      $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
 
-        // Only run queue if there is queued job in it.
-        if ($jobs > 0) {
-          drush_advancedqueue($command);
-        }
-      }
-      else {
+      // Only run queue if there is queued job in it.
+      if ($jobs > 0) {
         drush_advancedqueue($command);
       }
-
     }
   }
   catch (\Exception $e) {

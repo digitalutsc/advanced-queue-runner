@@ -17,7 +17,7 @@ class RunnerConfigForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'advancedqueue_runner.runnerconfig',
+      'advancedqueue_runner.settings',
     ];
   }
 
@@ -33,7 +33,7 @@ class RunnerConfigForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     global $base_url;
-    $config = $this->config('advancedqueue_runner.runnerconfig');
+    $config = $this->config('advancedqueue_runner.settings');
 
     $form = [];
     $form['base_url'] = [
@@ -166,7 +166,7 @@ class RunnerConfigForm extends ConfigFormBase {
     set_environment_home();
 
     // Get existing config.
-    $configFactory = $this->configFactory->getEditable('advancedqueue_runner.runnerconfig');
+    $configFactory = $this->configFactory->getEditable('advancedqueue_runner.settings');
     if (!empty($form_state->getValues()['base_url'])) {
       $configFactory->set('base_url', $form_state->getValues()['base_url']);
     }
@@ -187,7 +187,6 @@ class RunnerConfigForm extends ConfigFormBase {
       // Start the runner.
       $configFactory->set('queues', array_filter($form_state->getValues()['included-queues']));
       $configFactory->set('interval', $form_state->getValues()['interval']);
-      $configFactory->set('mode', "limit");
       $configFactory->set('started_at', time());
       // Save the config.
       $configFactory->save();

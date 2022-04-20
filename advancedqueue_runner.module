@@ -46,7 +46,7 @@ function set_environment_home() {
   if (empty(getenv('HOME'))) {
     if (!empty(posix_getpwuid(posix_getuid()))) {
       //putenv("HOME=" . posix_getpwuid(posix_getuid())['dir']);
-      $config = \Drupal::config('advancedqueue_runner.runnerconfig');
+      $config = \Drupal::config('advancedqueue_runner.settings');
       if (isset($config))
         putenv("HOME=" . $config->get('base_url'));
     }
@@ -58,7 +58,7 @@ function set_environment_home() {
  */
 function advancedqueue_runner_cron() {
 
-  $config = \Drupal::config('advancedqueue_runner.runnerconfig');
+  $config = \Drupal::config('advancedqueue_runner.settings');
   if ($config->get("auto-restart-in-cron") == 1) {
     $pid = $config->get('runner-pid');
     if (isset($pid) && !empty($pid)) {
@@ -73,7 +73,7 @@ function advancedqueue_runner_cron() {
         $newPID = $newProcess->getPid();
         if ($newProcess->status()) {
           // Update $config->get('runner-pid')
-          $config = \Drupal::service('config.factory')->getEditable('advancedqueue_runner.runnerconfig');
+          $config = \Drupal::service('config.factory')->getEditable('advancedqueue_runner.settings');
           $config->set('runner-pid', $newPID);
           $config->save();
         }
