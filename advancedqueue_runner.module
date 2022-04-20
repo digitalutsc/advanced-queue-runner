@@ -46,8 +46,9 @@ function set_environment_home() {
   if (empty(getenv('HOME'))) {
     if (!empty(posix_getpwuid(posix_getuid()))) {
       $config = \Drupal::config('advancedqueue_runner.settings');
-      if (isset($config))
+      if (isset($config)) {
         putenv("HOME=" . $config->get('base_url'));
+      }
     }
   }
 }
