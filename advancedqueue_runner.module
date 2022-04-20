@@ -45,7 +45,6 @@ function set_environment_home() {
   // To resolve https://github.com/digitalutsc/advanced-queue-runner/issues/2
   if (empty(getenv('HOME'))) {
     if (!empty(posix_getpwuid(posix_getuid()))) {
-      //putenv("HOME=" . posix_getpwuid(posix_getuid())['dir']);
       $config = \Drupal::config('advancedqueue_runner.settings');
       if (isset($config))
         putenv("HOME=" . $config->get('base_url'));
