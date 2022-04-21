@@ -13,6 +13,10 @@ use Drupal\Tests\BrowserTestBase;
 class LoadTest extends BrowserTestBase {
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+  /**
    * Modules to enable.
    *
    * @var array
@@ -39,7 +43,7 @@ class LoadTest extends BrowserTestBase {
    * Tests that the home page loads with a 200 response.
    */
   public function testLoad() {
-    $this->drupalGet(Url::fromRoute('<front>'));
+    $this->drupalGet(Url::fromRoute('advancedqueue_runner.runner_config_form'));
     $this->assertSession()->statusCodeEquals(200);
   }
 
