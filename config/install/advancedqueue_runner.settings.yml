@@ -1,1 +1,9 @@
-advancedqueue_runner:
+base_url: null
+drush_path: null
+root_path: null
+auto-restart-in-cron: 0
+queues: null
+interval: 5
+started_at: null
+advancedqueue_runner: null
+runner-pid: null

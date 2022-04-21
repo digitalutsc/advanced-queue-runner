@@ -21,7 +21,7 @@ class LoadTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['advancedqueue_runner'];
+  protected static $modules = ['advancedqueue_runner'];
 
   /**
    * A user with permission to administer site configuration.
@@ -33,7 +33,7 @@ class LoadTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->user = $this->drupalCreateUser(['administer site configuration']);
     $this->drupalLogin($this->user);
@@ -42,7 +42,7 @@ class LoadTest extends BrowserTestBase {
   /**
    * Tests that the home page loads with a 200 response.
    */
-  public function testLoad() {
+  public function testLoad(): void {
     $this->drupalGet(Url::fromRoute('advancedqueue_runner.runner_config_form'));
     $this->assertSession()->statusCodeEquals(200);
   }
