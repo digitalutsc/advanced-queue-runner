@@ -179,7 +179,9 @@ class RunnerConfigForm extends ConfigFormBase {
       $configFactory->set('root_path', $form_state->getValues()['root-path']);
     }
 
-    $configFactory->set('auto-restart-in-cron', $form_state->getValues()['auto-restart-in-cron']);
+    if (!empty($form_state->getValues()['auto-restart-in-cron'])) {
+      $configFactory->set('auto-restart-in-cron', $form_state->getValues()['auto-restart-in-cron']);
+    }
 
     $runnerID = $configFactory->get('runner-pid');
 
