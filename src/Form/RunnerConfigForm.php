@@ -132,7 +132,7 @@ class RunnerConfigForm extends ConfigFormBase {
         '#title' => $this->t('Select which queue(s) to run:'),
         '#required' => TRUE,
         '#options' => $queues,
-        '#default_value' => ($config->get("advancedqueue-id") !== NULL) ? $config->get("queues") : ["default"],
+        '#default_value' => ($config->get("queues") !== NULL) ? $config->get("queues") : ["default" => "default"],
       ];
       $form['interval'] = [
         '#type' => 'number',
