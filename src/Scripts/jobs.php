@@ -24,10 +24,8 @@ $autoloader = require $_SERVER['PWD'] . '/../vendor/autoload.php';
  */
 function drush_advancedqueue(string $command): void {
   // https://mglaman.dev/blog/using-reactphp-run-drupal-tasks.
-  //$loop = Loop::create();
-  $loop = Loop::get();
   $process = new Process($command);
-  $process->start($loop);
+  $process->start();
 
   $process->on('exit', function ($exitCode) use ($command) {
 
@@ -53,7 +51,6 @@ function drush_advancedqueue(string $command): void {
     // Log the message to Recent Log Message console.
     drupal_log($msg);
   });
-  $loop->run();
 }
 
 $request = Request::createFromGlobals();
