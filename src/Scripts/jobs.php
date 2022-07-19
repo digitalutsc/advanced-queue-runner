@@ -24,7 +24,8 @@ $autoloader = require $_SERVER['PWD'] . '/../vendor/autoload.php';
  */
 function drush_advancedqueue(string $command): void {
   // https://mglaman.dev/blog/using-reactphp-run-drupal-tasks.
-  $loop = Loop::create();
+  //$loop = Loop::create();
+  $loop = Loop::get();
   $process = new Process($command);
   $process->start($loop);
 
