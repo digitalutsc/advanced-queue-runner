@@ -1,7 +1,7 @@
 name: 'Advanced Queue Runner'
 type: module
 description: 'This module assist Advanced queue module for running in the background without activate cronjob or run command'
-core_version_requirement: '^8.8 || ^9'
+core_version_requirement: ^8.8 || ^9 || ^10
 package: 'Custom'
 dependencies:
   - advancedqueue:advancedqueue
