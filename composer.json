@@ -26,9 +26,9 @@
         }
     },
     "require": {
-        "react/child-process": "*",
-        "react/event-loop": "*",
-        "drupal/advancedqueue": "*"
+        "react/child-process": "^0.6.5",
+        "react/event-loop": "^1.2",
+        "drupal/advancedqueue": "^1.0@RC"
     },
     "require-dev": {
         "phpunit/phpunit": "^8",
