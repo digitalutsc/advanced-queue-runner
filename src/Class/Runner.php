@@ -60,28 +60,25 @@ class Runner {
    * Get Status.
    */
   public function status() {
-    $command = 'ps -p ' . $this->pid;
-    exec($command, $op);
-    if (!isset($op[1])) {
-      return FALSE;
-    }
-    else {
-      return TRUE;
-    }
+    return self::statusByPid($this->pid);
   }
 
   /**
    * Get Status by PID.
    */
   public static function statusByPid($pid) {
+    // Check if the ps command is provided by BusyBox. BusyBox's ps does not
+    // have a -p option so check if the process exists using procfs instead.
+    $check_ps = 'exec 2>/dev/null; readlink "/bin/ps"';
+    $retval = exec($check_ps);
+    if ($retval && preg_match('/^.*\/busybox$/', $retval)) {
+      $command = 'test -h /proc/' . $pid . '/exe';
+      exec($command, $op, $rstat);
+      return $rstat === 0;
+    }
     $command = 'ps -p ' . $pid;
     exec($command, $op);
-    if (!isset($op[1])) {
-      return FALSE;
-    }
-    else {
-      return TRUE;
-    }
+    return isset($op[1]);
   }
 
   /**
