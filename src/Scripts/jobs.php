@@ -79,24 +79,57 @@ $mode = $config->get('mode');
 $base_url = $config->get('base_url');
 $drush_path = $config->get('drush_path');
 $root_path = $config->get('root_path');
+$limit_jobs_number = $config->get('limit-jobs-running');
+$limit_jobs_set_all_queues = $config->get("enforce-limit-jobs-all-queues");
 
 // Run EventLoop.
 $loop = Loop::get();
 $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $kernel, $drush_path, $root_path) {
   try {
-    foreach ($queues as $queue) {
-      // @codingStandardsIgnoreLine
-      $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
+    $config = \Drupal::config('advancedqueue_runner.settings');
+    $limit_jobs_number = $config->get('limit-jobs-running');
+    $limit_jobs_set_all_queues = $config->get("enforce-limit-jobs-all-queues");
 
-      // run the queued jobs
-      $connection = $kernel->getContainer()->get('database');
-      $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
+    // Connect to Drupal database
+    $connection = $kernel->getContainer()->get('database');
+    
+    if ($limit_jobs_set_all_queues == 1) { 
+      // query the running jobs
+      $runningJob = $connection->query("SELECT count(job_id) FROM advancedqueue where state = 'Processing'")->fetchCol()[0];
 
-      // Only run queue if there is queued job in it.
-      if ($jobs > 0) {
-        drush_advancedqueue($command);
+      if ($runningJob < $limit_jobs_number) {
+        foreach ($queues as $queue) {
+          // @codingStandardsIgnoreLine
+          $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
+          
+          // run the queued jobs
+          $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
+  
+          // Based on the settings in Config form, to run another drush command to trigger the runner.
+          if ($jobs > 0) {
+            drush_advancedqueue($command);
+          }
+        }
       }
     }
+    else {
+      foreach ($queues as $queue) {
+        // @codingStandardsIgnoreLine
+        $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
+        
+        // run the queued jobs
+        $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
+  
+        // query the running jobs
+        $runningJob = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'Processing'")->fetchCol()[0];
+
+        // Based on the settings in Config form, to run another drush command to trigger the runner.
+        if ($jobs > 0 && $runningJob < $limit_jobs_number) {
+          drush_advancedqueue($command);
+        }
+      }
+    }
+    
   }
   catch (\Exception $e) {
     drupal_log($e->getMessage());

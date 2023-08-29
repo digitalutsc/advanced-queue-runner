@@ -74,6 +74,8 @@ class RunnerConfigForm extends ConfigFormBase {
             $this
               ->t('Interval'),
             $this
+              ->t('Limit number of job(s)'),
+            $this
               ->t('Environment variables (for Drush)'),
             $this
               ->t('Started since'),
@@ -85,6 +87,7 @@ class RunnerConfigForm extends ConfigFormBase {
               $config->get('runner-pid'),
               new FormattableMarkup($queue_str, []),
               $config->get('interval') . " second(s)",
+              $config->get('limit-jobs-running') . ($config->get("enforce-limit-jobs-all-queues") == 1 ? " for the whole system." : " for each queue."),
               new FormattableMarkup("<ul>
                 <li>Drush path: <code>" . $config->get('drush_path') . "</code></li>
                 <li>Site path: <code>" . $config->get('root_path') . "</code></li>
@@ -147,6 +150,21 @@ class RunnerConfigForm extends ConfigFormBase {
         '#title' => $this->t('Enable re-run automatically the runner when cron runs if the runner were interupted (ie. server reboot).'),
         '#default_value' => ($config->get("auto-restart-in-cron") !== NULL) ? $config->get("auto-restart-in-cron") : 0,
       ];
+
+      $form['limit-jobs-running'] = [
+        '#type' => 'number',
+        '#title' => $this
+          ->t('Limit the number of job(s) of each queue running at a time:'),
+        '#description' => new FormattableMarkup('Limiting the number of jobs running at a time for each queue. Enter -1 for no limit.', []),
+        '#default_value' => ($config->get("limit-jobs-running") !== NULL) ? $config->get("limit-jobs-running") : 1,
+        '#required' => TRUE,
+      ];
+
+      $form['enforce-limit-jobs-all-queues'] = [
+        '#type' => 'checkbox',
+        '#title' => $this->t('Enforce the above limit of jobs running as total of jobs running at a time in the whole system.'),
+        '#default_value' => ($config->get("enforce-limit-jobs-all-queues") !== NULL) ? $config->get("enforce-limit-jobs-all-queues") : 0,
+      ];
     }
     $form['submit'] = [
       '#type' => 'submit',
@@ -183,12 +201,15 @@ class RunnerConfigForm extends ConfigFormBase {
       $configFactory->set('auto-restart-in-cron', $form_state->getValues()['auto-restart-in-cron']);
     }
 
+    $configFactory->set('enforce-limit-jobs-all-queues', $form_state->getValues()['enforce-limit-jobs-all-queues']);
+
     $runnerID = $configFactory->get('runner-pid');
 
     if (!isset($runnerID)) {
       // Start the runner.
       $configFactory->set('queues', array_filter($form_state->getValues()['included-queues']));
       $configFactory->set('interval', $form_state->getValues()['interval']);
+      $configFactory->set('limit-jobs-running', $form_state->getValues()['limit-jobs-running']);
       $configFactory->set('started_at', time());
       // Save the config.
       $configFactory->save();
