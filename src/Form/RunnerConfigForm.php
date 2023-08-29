@@ -87,7 +87,7 @@ class RunnerConfigForm extends ConfigFormBase {
               $config->get('runner-pid'),
               new FormattableMarkup($queue_str, []),
               $config->get('interval') . " second(s)",
-              $config->get('limit-jobs-running') . ($config->get("enforce-limit-jobs-all-queues") == 1 ? " for the whole system." : " for each queue." ),
+              $config->get('limit-jobs-running') . ($config->get("enforce-limit-jobs-all-queues") == 1 ? " for the whole system." : " for each queue."),
               new FormattableMarkup("<ul>
                 <li>Drush path: <code>" . $config->get('drush_path') . "</code></li>
                 <li>Site path: <code>" . $config->get('root_path') . "</code></li>

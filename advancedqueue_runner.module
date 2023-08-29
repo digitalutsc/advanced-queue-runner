@@ -6,9 +6,9 @@
  */
 
 include __DIR__ . "/src/Class/Runner.php";
+use Drupal\advancedqueue_runner\Classes\Runner;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\advancedqueue_runner\Classes\Runner;
 
 /**
  * Implements hook_help().
