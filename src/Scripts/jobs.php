@@ -94,19 +94,21 @@ $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $
     $connection = $kernel->getContainer()->get('database');
     
     if ($limit_jobs_set_all_queues == 1) { 
-      foreach ($queues as $queue) {
-        // @codingStandardsIgnoreLine
-        $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
-        
-        // run the queued jobs
-        $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
-  
-        // query the running jobs
-        $runningJob = $connection->query("SELECT count(job_id) FROM advancedqueue where state = 'Processing'")->fetchCol()[0];
+      // query the running jobs
+      $runningJob = $connection->query("SELECT count(job_id) FROM advancedqueue where state = 'Processing'")->fetchCol()[0];
 
-        // Based on the settings in Config form, to run another drush command to trigger the runner.
-        if ($jobs > 0 && $runningJob < $limit_jobs_number) {
-          drush_advancedqueue($command);
+      if ($runningJob < $limit_jobs_number) {
+        foreach ($queues as $queue) {
+          // @codingStandardsIgnoreLine
+          $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
+          
+          // run the queued jobs
+          $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
+  
+          // Based on the settings in Config form, to run another drush command to trigger the runner.
+          if ($jobs > 0) {
+            drush_advancedqueue($command);
+          }
         }
       }
     }
