@@ -99,7 +99,7 @@ $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $
         $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
         
         // run the queued jobs
-        $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where state = 'queued'")->fetchCol()[0];
+        $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
   
         // query the running jobs
         $runningJob = $connection->query("SELECT count(job_id) FROM advancedqueue where state = 'Processing'")->fetchCol()[0];
