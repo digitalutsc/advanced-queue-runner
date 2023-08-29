@@ -26,3 +26,9 @@ advancedqueue_runner.settings:
     started_at:
       type: integer
       label: 'Started at'
+    limit-jobs-running:
+      type: integer
+      label: 'Limiting the number of jobs running at a time. Enter -1 for no limit.'
+    enforce-limit-jobs-all-queues:
+      type: integer
+      label: 'Enforce the above limit of jobs running at a time for all of existing Advanced Queues.'
