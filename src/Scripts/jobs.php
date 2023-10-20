@@ -9,7 +9,7 @@
 use React\EventLoop\Loop;
 use React\ChildProcess\Process;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Cmf\Component\Routing\RouteObjectInterface;
+use Drupal\Core\Routing\RouteObjectInterface;
 use Symfony\Component\Routing\Route;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
