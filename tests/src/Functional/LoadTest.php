@@ -44,7 +44,7 @@ class LoadTest extends BrowserTestBase {
    */
   public function testLoad(): void {
     $this->drupalGet(Url::fromRoute('advancedqueue_runner.runner_config_form'));
-    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->statusMessageContains('200');
   }
 
 }
