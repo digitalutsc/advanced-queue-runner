@@ -200,8 +200,10 @@ class RunnerConfigForm extends ConfigFormBase {
     if (!empty($form_state->getValues()['auto-restart-in-cron'])) {
       $configFactory->set('auto-restart-in-cron', $form_state->getValues()['auto-restart-in-cron']);
     }
-
-    $configFactory->set('enforce-limit-jobs-all-queues', $form_state->getValues()['enforce-limit-jobs-all-queues']);
+    
+    if (!empty($form_state->getValues()['enforce-limit-jobs-all-queues'])) { 
+      $configFactory->set('enforce-limit-jobs-all-queues', $form_state->getValues()['enforce-limit-jobs-all-queues']);
+    }
 
     $runnerID = $configFactory->get('runner-pid');
 
