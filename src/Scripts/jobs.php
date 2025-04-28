@@ -23,6 +23,7 @@ $autoloader = require $_SERVER['PWD'] . '/../vendor/autoload.php';
  *   The linux command to execute.
  */
 function drush_advancedqueue(string $command): void {
+  $command .= ' > /dev/null 2>&1 &';
   // https://mglaman.dev/blog/using-reactphp-run-drupal-tasks.
   $process = new Process($command);
   $process->start();
@@ -92,7 +93,7 @@ $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $
 
     // Connect to Drupal database
     $connection = $kernel->getContainer()->get('database');
-    
+
     if ($limit_jobs_set_all_queues == 1) { 
       // query the running jobs
       $runningJob = $connection->query("SELECT count(job_id) FROM advancedqueue where state = 'Processing'")->fetchCol()[0];
@@ -103,11 +104,16 @@ $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $
           $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
           
           // run the queued jobs
-          $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
-  
+          $jobs = $connection->query("SELECT EXISTS (SELECT 1 FROM advancedqueue WHERE queue_id = '$queue' AND state = 'queued')")->fetchField();
+
           // Based on the settings in Config form, to run another drush command to trigger the runner.
           if ($jobs > 0) {
-            drush_advancedqueue($command);
+            //drush_advancedqueue($command);
+            try {
+              exec($command . ' > /dev/null 2>&1 &');
+            } catch (\Exception $e) {
+              drupal_log("Error executing command: " . $e->getMessage());
+            }
           }
         }
       }
@@ -118,14 +124,19 @@ $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $
         $command = sprintf($drush_path . ' --root=' . $root_path . ' --uri=' . $base_url . ' advancedqueue:queue:process ' . $queue);
         
         // run the queued jobs
-        $jobs = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'queued'")->fetchCol()[0];
-  
+        $jobs = $connection->query("SELECT EXISTS (SELECT 1 FROM advancedqueue WHERE queue_id = '$queue' AND state = 'queued')")->fetchField();
+        
         // query the running jobs
-        $runningJob = $connection->query("SELECT count(job_id) FROM advancedqueue where queue_id = '$queue' and state = 'Processing'")->fetchCol()[0];
-
+        $runningJob = $connection->query("SELECT EXISTS (SELECT 1 FROM advancedqueue WHERE queue_id = '$queue' AND state = 'Processing')")->fetchField();
+        
         // Based on the settings in Config form, to run another drush command to trigger the runner.
         if ($jobs > 0 && $runningJob < $limit_jobs_number) {
-          drush_advancedqueue($command);
+          //drush_advancedqueue($command);
+          try {
+            exec($command . ' > /dev/null 2>&1 &');
+          } catch (\Exception $e) {
+            drupal_log("Error executing command: " . $e->getMessage());
+          }
         }
       }
     }
