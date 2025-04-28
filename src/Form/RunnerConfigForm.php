@@ -142,7 +142,7 @@ class RunnerConfigForm extends ConfigFormBase {
         '#title' => $this
           ->t('Interval:'),
         '#description' => new FormattableMarkup('In second(s). ', []),
-        '#default_value' => ($config->get("interval") !== NULL) ? $config->get("interval") : 5,
+        '#default_value' => ($config->get("interval") !== NULL) ? $config->get("interval") : 150,
         '#required' => TRUE,
       ];
       $form['auto-restart-in-cron'] = [
