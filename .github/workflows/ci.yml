@@ -11,5 +11,5 @@ jobs:
   islandora-module-ci:
     uses: digitalutsc/reusable_workflows/.github/workflows/islandora-module-ci.yml@main
     with:
-      module_name: advanced-queue-runner
+      module_name: advancedqueue_runner
       install_chromedriver: true
