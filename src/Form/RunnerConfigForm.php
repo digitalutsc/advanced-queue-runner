@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:disable DrupalPractice.Objects.GlobalDrupal.GlobalDrupal
+
 namespace Drupal\advancedqueue_runner\Form;
 
 use Drupal\advancedqueue_runner\Classes\Runner;
@@ -44,6 +46,7 @@ class RunnerConfigForm extends ConfigFormBase {
     $runnerID = $config->get('runner-pid');
     $default = "Run";
 
+    // phpcs:ignore -- Unused variable $modes.
     $modes = [
       'limit' => $this
         ->t('Only run queue(s) if there is queued job(s)'),
@@ -103,6 +106,7 @@ class RunnerConfigForm extends ConfigFormBase {
         // If not running, remove the PID.
         $config->set('runner-pid', NULL);
         $config->save();
+        // phpcs:ignore -- t() calls should be avoided in classes
         \Drupal::messenger()->addMessage(t('Sorry, the Advanced Queue Runner is not currently running. Please refresh the page to start it again.'), 'error');
         return $form;
       }
@@ -200,8 +204,8 @@ class RunnerConfigForm extends ConfigFormBase {
     if (!empty($form_state->getValues()['auto-restart-in-cron'])) {
       $configFactory->set('auto-restart-in-cron', $form_state->getValues()['auto-restart-in-cron']);
     }
-    
-    if (!empty($form_state->getValues()['enforce-limit-jobs-all-queues'])) { 
+
+    if (!empty($form_state->getValues()['enforce-limit-jobs-all-queues'])) {
       $configFactory->set('enforce-limit-jobs-all-queues', $form_state->getValues()['enforce-limit-jobs-all-queues']);
     }
 
@@ -221,6 +225,7 @@ class RunnerConfigForm extends ConfigFormBase {
       $status = $process->status();
 
       if ($status) {
+        // phpcs:ignore -- t() calls should be avoided in classes
         \Drupal::messenger()->addMessage(t('The Runner is now active.'));
         $configFactory->set('runner-pid', $my_pid);
       }
