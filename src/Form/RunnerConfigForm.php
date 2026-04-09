@@ -215,7 +215,7 @@ class RunnerConfigForm extends ConfigFormBase {
     parent::submitForm($form, $form_state);
 
     // Ensure the HOME enviroment variable is set.
-    set_environment_home();
+    advancedqueue_runner_set_environment_home();
 
     // Get existing config.
     $configFactory = $this->configFactory->getEditable('advancedqueue_runner.settings');
