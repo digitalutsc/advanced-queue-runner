@@ -5,8 +5,6 @@
  * Contains advancedqueue_runner.module.
  */
 
-// phpcs:disable Drupal.NamingConventions.ValidFunctionName.InvalidPrefix
-
 include __DIR__ . "/src/Class/Runner.php";
 use Drupal\advancedqueue_runner\Classes\Runner;
 use Drupal\Core\Logger\RfcLogLevel;
@@ -43,7 +41,7 @@ function advancedqueue_runner_theme() {
 /**
  * To resolve https://github.com/digitalutsc/advanced-queue-runner/issues/2.
  */
-function set_environment_home() {
+function advancedqueue_runner_set_environment_home() {
   // To resolve https://github.com/digitalutsc/advanced-queue-runner/issues/2
   if (empty(getenv('HOME'))) {
     if (!empty(posix_getpwuid(posix_getuid()))) {
@@ -68,7 +66,7 @@ function advancedqueue_runner_cron() {
       if (!Runner::statusByPid($pid)) {
 
         // Have to set home variable.
-        set_environment_home();
+        advancedqueue_runner_set_environment_home();
 
         // If no, restart the runner with existing set config,.
         $newProcess = new Runner('php ' . __DIR__ . '/src/Scripts/jobs.php');
@@ -80,7 +78,7 @@ function advancedqueue_runner_cron() {
           $config->save();
         }
         else {
-          drupal_log("Unable to restart the runner");
+          advancedqueue_runner_drupal_log("Unable to restart the runner");
         }
       }
     }
@@ -88,47 +86,14 @@ function advancedqueue_runner_cron() {
 }
 
 /**
- * Debug function: display any variable to error log.
- *
- * @param $thing
- */
-if (!function_exists('print_log')) {
-
-  /**
-   * Print log to apache log.
-   */
-  function print_log($thing) {
-    error_log(print_r($thing, TRUE), 0);
-  }
-
-}
-/**
- * Debug function: display any variable to current webpage.
- *
- * @param $thing
- */
-if (!function_exists('logging')) {
-
-  /**
-   * Print log to webpage.
-   */
-  function logging($thing) {
-    echo "<pre>";
-    print_r($thing);
-    echo "</pre>";
-  }
-
-}
-
-/**
  * Debug function: display any variable to drupal Reports Log messages.
  */
-if (!function_exists('drupal_log')) {
+if (!function_exists('advancedqueue_runner_drupal_log')) {
 
   /**
    * Print log in Recent Log messages.
    */
-  function drupal_log($msg, $type = "error") {
+  function advancedqueue_runner_drupal_log($msg, $type = "error") {
     switch ($type) {
       case "notice":
         \Drupal::logger(basename(__FILE__, '.module'))->notice($msg);

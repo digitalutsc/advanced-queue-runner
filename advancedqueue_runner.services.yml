@@ -4,4 +4,4 @@ services:
     arguments: ['advancedqueue_runner']
   advancedqueue_runner.default:
     class: Drupal\advancedqueue_runner\DefaultService
-    arguments: []
+    arguments: ['@entity_type.manager', '@messenger']
