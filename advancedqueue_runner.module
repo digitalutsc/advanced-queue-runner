@@ -7,7 +7,6 @@
 
 include __DIR__ . "/src/Class/Runner.php";
 use Drupal\advancedqueue_runner\Classes\Runner;
-use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
@@ -78,59 +77,9 @@ function advancedqueue_runner_cron() {
           $config->save();
         }
         else {
-          advancedqueue_runner_drupal_log("Unable to restart the runner");
+          \Drupal::logger("advancedqueue_runner")->error("Unable to restart the runner");
         }
       }
     }
   }
-}
-
-/**
- * Debug function: display any variable to drupal Reports Log messages.
- */
-if (!function_exists('advancedqueue_runner_drupal_log')) {
-
-  /**
-   * Print log in Recent Log messages.
-   */
-  function advancedqueue_runner_drupal_log($msg, $type = "error") {
-    switch ($type) {
-      case "notice":
-        \Drupal::logger(basename(__FILE__, '.module'))->notice($msg);
-        break;
-
-      case "log":
-        \Drupal::logger(basename(__FILE__, '.module'))->log(RfcLogLevel::NOTICE, $msg);
-        break;
-
-      case "warning":
-        \Drupal::logger(basename(__FILE__, '.module'))->warning($msg);
-        break;
-
-      case "alert":
-        \Drupal::logger(basename(__FILE__, '.module'))->alert($msg);
-        break;
-
-      case "critical":
-        \Drupal::logger(basename(__FILE__, '.module'))->critical($msg);
-        break;
-
-      case "debug":
-        \Drupal::logger(basename(__FILE__, '.module'))->debug($msg);
-        break;
-
-      case "info":
-        \Drupal::logger(basename(__FILE__, '.module'))->info($msg);
-        break;
-
-      case "emergency":
-        \Drupal::logger(basename(__FILE__, '.module'))->emergency($msg);
-        break;
-
-      default:
-        \Drupal::logger(basename(__FILE__, '.module'))->error($msg);
-        break;
-    }
-  }
-
 }
