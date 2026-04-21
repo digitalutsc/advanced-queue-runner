@@ -42,14 +42,14 @@ function drush_advancedqueue(string $command): void {
     $msg = "Error with" . $e->getMessage();
 
     // Log the message to Recent Log Message console.
-    drupal_log($msg);
+    \Drupal::logger("advancedqueue_runner")->error($msg);
   });
   $process->stderr->on('error', function (\Exception $e) use ($command) {
     // Log an error.
     $msg = "ReactPHP Eventloop - stderr Error with" . $e->getMessage();
 
     // Log the message to Recent Log Message console.
-    drupal_log($msg);
+    \Drupal::logger("advancedqueue_runner")->error($msg);
   });
 }
 
@@ -132,7 +132,7 @@ $loop->addPeriodicTimer($interval, function () use ($queues, $mode, $base_url, $
     
   }
   catch (\Exception $e) {
-    drupal_log($e->getMessage());
+    \Drupal::logger("advancedqueue_runner")->error($e->getMessage());
   }
 });
 $loop->run();

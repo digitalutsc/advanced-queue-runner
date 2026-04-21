@@ -1,18 +1,56 @@
 <?php
 
-// phpcs:disable DrupalPractice.Objects.GlobalDrupal.GlobalDrupal
-
 namespace Drupal\advancedqueue_runner\Form;
 
 use Drupal\advancedqueue_runner\Classes\Runner;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 
 /**
  * Class RunnerConfigForm definition.
  */
 class RunnerConfigForm extends ConfigFormBase {
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * The messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
+   * Constructs a RunnerConfigForm object.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
+   */
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, MessengerInterface $messenger) {
+    $this->entityTypeManager = $entity_type_manager;
+    $this->messenger = $messenger;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity_type.manager'),
+      $container->get('messenger')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -46,13 +84,6 @@ class RunnerConfigForm extends ConfigFormBase {
     $runnerID = $config->get('runner-pid');
     $default = "Run";
 
-    // phpcs:ignore -- Unused variable $modes.
-    $modes = [
-      'limit' => $this
-        ->t('Only run queue(s) if there is queued job(s)'),
-      'full' => $this
-        ->t('Always run the queue(s) no matter what.'),
-    ];
     /** @var string $queue_str */
     $queue_str = '';
     if ($config->get('queues') !== NULL) {
@@ -106,13 +137,12 @@ class RunnerConfigForm extends ConfigFormBase {
         // If not running, remove the PID.
         $config->set('runner-pid', NULL);
         $config->save();
-        // phpcs:ignore -- t() calls should be avoided in classes
-        \Drupal::messenger()->addMessage(t('Sorry, the Advanced Queue Runner is not currently running. Please refresh the page to start it again.'), 'error');
+        $this->messenger()->addMessage($this->t('Sorry, the Advanced Queue Runner is not currently running. Please refresh the page to start it again.'), 'error');
         return $form;
       }
     }
     else {
-      $queues = \Drupal::entityQuery('advancedqueue_queue')->execute();
+      $queues = $this->entityTypeManager->getStorage('advancedqueue_queue')->getQuery()->execute();
       foreach ($queues as $key => $value) {
         $queues[$key] = $value . " <a href='/admin/config/system/queues/jobs/$key' target='_blank'>&#9432;</a>";
       }
@@ -185,7 +215,7 @@ class RunnerConfigForm extends ConfigFormBase {
     parent::submitForm($form, $form_state);
 
     // Ensure the HOME enviroment variable is set.
-    set_environment_home();
+    advancedqueue_runner_set_environment_home();
 
     // Get existing config.
     $configFactory = $this->configFactory->getEditable('advancedqueue_runner.settings');
@@ -225,8 +255,7 @@ class RunnerConfigForm extends ConfigFormBase {
       $status = $process->status();
 
       if ($status) {
-        // phpcs:ignore -- t() calls should be avoided in classes
-        \Drupal::messenger()->addMessage(t('The Runner is now active.'));
+        $this->messenger()->addMessage($this->t('The Runner is now active.'));
         $configFactory->set('runner-pid', $my_pid);
       }
     }
